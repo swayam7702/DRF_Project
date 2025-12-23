@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import { Navigate, redirect } from 'react-router-dom';
+// import {ToastContainer} from ''
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 const Register = () => {
+    const navigate = useNavigate();
     const formStyle = {
         maxWidth: "400px",
         margin: "50px auto",
@@ -41,32 +46,86 @@ const Register = () => {
         email: "",
         password: "",
     });
+    const [loading, setLoading] = useState(false);
 
-    // Handle input changes
+    // const notify = (message) => toast({
+    //     render: message.messgae,
+    //     autoClose: loading,
+    //     type: message.type
+    // });
+
+
+    const notify = (message) => {
+        console.log(message, "messageeee")
+        if (message?.type === "info") {
+            toast(message?.message)
+        }
+        else if (message?.type === "success") {
+            toast.success(message?.message)
+        }
+        else if (message?.type === "error") {
+            toast.error(message?.message)
+        }
+    };
+
     const handleChange = (e) => {
+
+        console.log(e.target.name, ":", e.target.value, "ertytreer")
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value,
+            [e.target.name]: e.target.value
         });
     };
 
+    console.log(formData, "formDattaa")
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
 
         const userData = {
             ...formData
         }
+        notify({
+            message: "Creating An account....!",
+            type: "info"
+        })
+
+        console.log(userData, "payload while submiting")
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/v1/register/", userData);
-            alert("Registration successful!");
-            console.log("wertyuytr",response);
+            const response = await axios.post("http://127.0.0.1:8000/api/v1/regist/", userData);
+
+            console.log("wertyuytr", response);
+            setFormData({
+                username: "",
+                email: "",
+                password: "",
+            })
+
+            if (response?.status == 201) {
+                notify({
+                    message: "Registration Success!",
+                    type: "success"
+                })
+                navigate("/")
+                setFormData({})
+            }
+
         } catch (error) {
             console.error("Error registering:", error);
-            alert("Registration failed. Please try again.");
+            // alert("Registration failed. Please try again.");
+            // notify = () => toast("Registration Failed!");
+            notify({
+                message: "Registration Failed!",
+                type: "error"
+            })
+        } finally {
+            setLoading(false)
         }
     };
 
-    console.log(formData,"erty")
+
     return (
         <div style={formStyle}>
             <h2 style={headingStyle}>Register</h2>
@@ -74,7 +133,11 @@ const Register = () => {
                 <input type="text" name="username" placeholder="Username" onChange={handleChange} style={inputStyle} />
                 <input type="email" name="email" placeholder="Email" onChange={handleChange} style={inputStyle} />
                 <input type="password" name="password" placeholder="Password" onChange={handleChange} style={inputStyle} />
-                <button type="submit" style={buttonStyle}>Register</button>
+                <div>
+                    <button style={buttonStyle}>Register!</button>
+                    {/* <button type="submit" style={buttonStyle}>Register</button> */}
+                    <ToastContainer />
+                </div>
             </form>
         </div>
     );

@@ -9,11 +9,11 @@ function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-      <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/login" element={<LogInPage />} />
       </Route>
-      <Route path="/login" element={<LogInPage />} />
     </Routes>
   );
 }
