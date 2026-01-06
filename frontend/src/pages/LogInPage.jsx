@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-
+import { ToastContainer,toast } from 'react-toastify';
 const LogInPage = () => {
     const navigate = useNavigate();
     const formStyle = {
@@ -48,6 +48,28 @@ const LogInPage = () => {
     // formData.email = "New Value"
     // formData.password = "New Value"
 
+    const TOAST_ID = "login-toast";
+
+    const notify = ({ message, type }) => {
+        if (toast.isActive(TOAST_ID)) {
+            toast.update(TOAST_ID), {
+                render: message,
+                type,
+                isLoading: type === "info",
+                autoClose: type === "info" ? false : 3000,
+            }
+        } else {
+            toast(message, {
+                toastId:TOAST_ID,
+                render: message,
+                type,
+                isLoading: type === "info",
+                autoClose: type === "info" ? false : 3000,
+            }
+            )
+        }
+    }
+
 
     const handleChange = (e) => {
 
@@ -57,11 +79,18 @@ const LogInPage = () => {
             [e.target.name]: e.target.value
         });
     };
+    const [loading, setLoading] = useState(false);
 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setLoading(true)
+        notify(
+            {
+                message:"Logging in.....",
+                type:"info"
+            }
+        )
         const userData = {
             ...formData
         }
@@ -69,22 +98,32 @@ const LogInPage = () => {
         console.log(userData, "payload while submiting")
         try {
             const response = await axios.post("http://127.0.0.1:8000/api/v1/login/", userData);
-            alert("LogIn successful!");
+            console.log(response,"responseeee")
+            if(response?.status === 200){
+                notify({
+                    message:response?.data?.message,
+                    type:"success"
+                })
+                navigate("/")
+            }
             setFormData({
                 username: "",
                 password: "",
             })
-
-            if(response?.status == 200){
-                navigate("/")
-            }
         } catch (error) {
             console.error("Error loggining:", error);
-            alert("LogIn failed. Please try again.");
+            notify(
+                {
+                    message:"Login Failed!",
+                    type:"error"
+                }
+            )
+        }finally{
+            setLoading(false)
         }
     };
 
- 
+
     return (
         <div style={formStyle}>
             <h2 style={headingStyle}>LogIn Page</h2>
@@ -93,6 +132,7 @@ const LogInPage = () => {
                 {/* <input type="email" name="email" placeholder="Email" onChange={handleChange} style={inputStyle} /> */}
                 <input type="password" name="password" placeholder="Password" onChange={handleChange} style={inputStyle} />
                 <button type="submit" style={buttonStyle}>LogIn</button>
+                <ToastContainer/>
             </form>
         </div>
     );

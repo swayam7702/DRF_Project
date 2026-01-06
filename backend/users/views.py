@@ -23,7 +23,7 @@ class LoginView(APIView):
                 {
                     "messgae":"Username and Password are required!"
                 },
-                status=status.HTTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST
             )
         user = authenticate(username=username, password=password)
 

@@ -41,6 +41,8 @@ const Register = () => {
         marginBottom: "20px",
         color: "#333",
     };
+
+    const TOAST_ID = "register-toast";
     const [formData, setFormData] = useState({
         username: "",
         email: "",
@@ -55,18 +57,39 @@ const Register = () => {
     // });
 
 
-    const notify = (message) => {
-        console.log(message, "messageeee")
-        if (message?.type === "info") {
-            toast(message?.message)
+    // const notify = (message) => {
+     
+    //     if (message?.type === "info") {
+    //         toast(message?.message)
+    //     }
+    //     else if (message?.type === "success") {
+    //         toast.success(message?.message)
+    //     }
+    //     else if (message?.type === "error") {
+    //         toast.error(message?.message)
+    //     }
+    // };
+
+
+
+    const notify = ({message, type}) =>{
+        alert(type)
+        if(toast.isActive(TOAST_ID)){
+            toast.update(TOAST_ID,{
+                render:message,
+                type,
+                isLoading : type === "info",
+                autoClose : type === "info" ? false : 3000,
+            })
+        }else{
+            toast(message,{
+                toastId:TOAST_ID,
+                type,
+                isLoading : type === "info",
+                autoClose : type === "info" ? false : 3000,
+            })
         }
-        else if (message?.type === "success") {
-            toast.success(message?.message)
-        }
-        else if (message?.type === "error") {
-            toast.error(message?.message)
-        }
-    };
+    }
 
     const handleChange = (e) => {
 
@@ -94,7 +117,7 @@ const Register = () => {
 
         console.log(userData, "payload while submiting")
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/v1/regist/", userData);
+            const response = await axios.post("http://127.0.0.1:8000/api/v1/register/", userData);
 
             console.log("wertyuytr", response);
             setFormData({
@@ -104,6 +127,7 @@ const Register = () => {
             })
 
             if (response?.status == 201) {
+                alert("ertyujhgfrtyu")
                 notify({
                     message: "Registration Success!",
                     type: "success"
