@@ -37,13 +37,6 @@ class RegisterView(generics.CreateAPIView):
         )
 
 
-
-
-
-
-
-
-
 class LoginView(APIView):
     def post(self,request):
         username = request.data.get("username")
@@ -66,7 +59,7 @@ class LoginView(APIView):
                     "user":{
                         "id":user.id,
                         "username":user.username,
-                        "password":user.password
+                        # "password":user.password
                     }
                 },
                 status=status.HTTP_200_OK

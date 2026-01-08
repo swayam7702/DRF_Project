@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer,toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 const LogInPage = () => {
     const navigate = useNavigate();
     const formStyle = {
@@ -52,15 +52,16 @@ const LogInPage = () => {
 
     const notify = ({ message, type }) => {
         if (toast.isActive(TOAST_ID)) {
-            toast.update(TOAST_ID), {
+            toast.update(TOAST_ID, {
                 render: message,
                 type,
                 isLoading: type === "info",
                 autoClose: type === "info" ? false : 3000,
-            }
+            });
+
         } else {
             toast(message, {
-                toastId:TOAST_ID,
+                toastId: TOAST_ID,
                 render: message,
                 type,
                 isLoading: type === "info",
@@ -87,8 +88,8 @@ const LogInPage = () => {
         setLoading(true)
         notify(
             {
-                message:"Logging in.....",
-                type:"info"
+                message: "Logging in.....",
+                type: "info"
             }
         )
         const userData = {
@@ -98,13 +99,12 @@ const LogInPage = () => {
         console.log(userData, "payload while submiting")
         try {
             const response = await axios.post("http://127.0.0.1:8000/api/v1/login/", userData);
-            if(response?.status === 200){
-                notify({
-                    message:response?.data?.message,
-                    type:"success"
-                })
-                navigate("/")
+            if (response?.status === 200) {
+                localStorage.setItem("authUser", JSON.stringify(response.data.user));
+                notify({ message: response.data.message, type: "success" });
+                navigate("/");
             }
+
             setFormData({
                 username: "",
                 password: "",
@@ -112,11 +112,11 @@ const LogInPage = () => {
         } catch (error) {
             const errMessage = error?.response?.data?.message;
             notify({
-                message:errMessage || "Registration Failed!",
+                message: errMessage || "Registration Failed!",
                 type: "error"
             }
-        )
-        }finally{
+            )
+        } finally {
             setLoading(false)
         }
     };
@@ -130,7 +130,7 @@ const LogInPage = () => {
                 {/* <input type="email" name="email" placeholder="Email" onChange={handleChange} style={inputStyle} /> */}
                 <input type="password" name="password" placeholder="Password" onChange={handleChange} style={inputStyle} />
                 <button type="submit" style={buttonStyle}>LogIn</button>
-                <ToastContainer/>
+                <ToastContainer />
             </form>
         </div>
     );

@@ -50,25 +50,25 @@ const Register = () => {
     });
     const [loading, setLoading] = useState(false);
 
-  
 
 
 
-    const notify = ({message, type}) =>{
+
+    const notify = ({ message, type }) => {
         // alert(type)
-        if(toast.isActive(TOAST_ID)){
-            toast.update(TOAST_ID,{
-                render:message,
+        if (toast.isActive(TOAST_ID)) {
+            toast.update(TOAST_ID, {
+                render: message,
                 type,
-                isLoading : type === "info",
-                autoClose : type === "info" ? false : 3000,
+                isLoading: type === "info",
+                autoClose: type === "info" ? false : 3000,
             })
-        }else{
-            toast(message,{
-                toastId:TOAST_ID,
+        } else {
+            toast(message, {
+                toastId: TOAST_ID,
                 type,
-                isLoading : type === "info",
-                autoClose : type === "info" ? false : 3000,
+                isLoading: type === "info",
+                autoClose: type === "info" ? false : 3000,
             })
         }
     }
@@ -108,19 +108,23 @@ const Register = () => {
                 password: "",
             })
 
-            if (response?.status == 201) {
-                const successMessage = response?.data?.message ;
+            if (response?.status === 201) {
+                const successMessage = response?.data?.message;
                 notify({
                     message: successMessage || "Registration Success!",
                     type: "success"
                 })
-                navigate("/")
-                setFormData({})
+                navigate("/login");
+                setFormData({
+                    username: "",
+                    email: "",
+                    password: "",
+                });
             }
 
         } catch (error) {
             console.error("Error registering:", error?.response?.data?.message);
-           const errMessage =   error?.response?.data?.message
+            const errMessage = error?.response?.data?.message
             notify({
                 message: errMessage || "Registration Failed!",
                 type: "error"
