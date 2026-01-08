@@ -50,30 +50,12 @@ const Register = () => {
     });
     const [loading, setLoading] = useState(false);
 
-    // const notify = (message) => toast({
-    //     render: message.messgae,
-    //     autoClose: loading,
-    //     type: message.type
-    // });
-
-
-    // const notify = (message) => {
-     
-    //     if (message?.type === "info") {
-    //         toast(message?.message)
-    //     }
-    //     else if (message?.type === "success") {
-    //         toast.success(message?.message)
-    //     }
-    //     else if (message?.type === "error") {
-    //         toast.error(message?.message)
-    //     }
-    // };
+  
 
 
 
     const notify = ({message, type}) =>{
-        alert(type)
+        // alert(type)
         if(toast.isActive(TOAST_ID)){
             toast.update(TOAST_ID,{
                 render:message,
@@ -127,9 +109,9 @@ const Register = () => {
             })
 
             if (response?.status == 201) {
-                alert("ertyujhgfrtyu")
+                const successMessage = response?.data?.message ;
                 notify({
-                    message: "Registration Success!",
+                    message: successMessage || "Registration Success!",
                     type: "success"
                 })
                 navigate("/")
@@ -137,11 +119,10 @@ const Register = () => {
             }
 
         } catch (error) {
-            console.error("Error registering:", error);
-            // alert("Registration failed. Please try again.");
-            // notify = () => toast("Registration Failed!");
+            console.error("Error registering:", error?.response?.data?.message);
+           const errMessage =   error?.response?.data?.message
             notify({
-                message: "Registration Failed!",
+                message: errMessage || "Registration Failed!",
                 type: "error"
             })
         } finally {
@@ -167,4 +148,4 @@ const Register = () => {
     );
 }
 
-export default Register
+export default Register;

@@ -98,7 +98,6 @@ const LogInPage = () => {
         console.log(userData, "payload while submiting")
         try {
             const response = await axios.post("http://127.0.0.1:8000/api/v1/login/", userData);
-            console.log(response,"responseeee")
             if(response?.status === 200){
                 notify({
                     message:response?.data?.message,
@@ -111,13 +110,12 @@ const LogInPage = () => {
                 password: "",
             })
         } catch (error) {
-            console.error("Error loggining:", error);
-            notify(
-                {
-                    message:"Login Failed!",
-                    type:"error"
-                }
-            )
+            const errMessage = error?.response?.data?.message;
+            notify({
+                message:errMessage || "Registration Failed!",
+                type: "error"
+            }
+        )
         }finally{
             setLoading(false)
         }
