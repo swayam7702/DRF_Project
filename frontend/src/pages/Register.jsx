@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import { Navigate, redirect } from 'react-router-dom';
+import { Link, Navigate, redirect } from 'react-router-dom';
 // import {ToastContainer} from ''
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -146,6 +146,7 @@ const Register = () => {
                     <button style={buttonStyle}>Register!</button>
                     {/* <button type="submit" style={buttonStyle}>Register</button> */}
                     <ToastContainer />
+                    <Link to="/login">Already user ?</Link>
                 </div>
             </form>
         </div>

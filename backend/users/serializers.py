@@ -63,3 +63,10 @@ class UserSerializer(serializers.ModelSerializer):
 #             "blank": "Password cannot be empty."
 #         }
 #     )
+
+
+
+# class ProfileSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ["username", "email"]

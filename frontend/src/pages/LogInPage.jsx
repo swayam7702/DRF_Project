@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 const LogInPage = () => {
     const navigate = useNavigate();
@@ -130,6 +130,7 @@ const LogInPage = () => {
                 {/* <input type="email" name="email" placeholder="Email" onChange={handleChange} style={inputStyle} /> */}
                 <input type="password" name="password" placeholder="Password" onChange={handleChange} style={inputStyle} />
                 <button type="submit" style={buttonStyle}>LogIn</button>
+                <Link to="/register">New User?</Link>
                 <ToastContainer />
             </form>
         </div>

@@ -1,6 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
+  const navigate = useNavigate();
+
+  const handleOut = () => {
+    localStorage.removeItem("authUser");
+    navigate("/login")
+  };
+  
   return (
     <header
       style={{
@@ -17,8 +24,7 @@ function Header() {
       <nav style={{ display: "flex", gap: "20px" }}>
         <Link style={{ color: "white" }} to="/">Home</Link>
         <Link style={{ color: "white" }} to="/about">About</Link>
-        <Link style={{ color: "white" }} to="/login">Login</Link>
-        <Link style={{ color: "white" }} to="/register">Register</Link>
+        <button onClick={handleOut}>Logout</button>
       </nav>
     </header>
   );
