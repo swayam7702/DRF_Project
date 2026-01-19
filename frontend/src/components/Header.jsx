@@ -7,10 +7,10 @@ function Header() {
     localStorage.removeItem("authUser");
     navigate("/login")
   };
-  
+
   return (
     <header
-      style={{
+      style={{ 
         padding: "15px",
         background: "#333",
         color: "#fff",
@@ -25,6 +25,7 @@ function Header() {
         <Link style={{ color: "white" }} to="/">Home</Link>
         <Link style={{ color: "white" }} to="/about">About</Link>
         <button onClick={handleOut}>Logout</button>
+        <Link style={{ color: "white" }} to="/profile">Profile</Link>
       </nav>
     </header>
   );

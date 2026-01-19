@@ -75,32 +75,31 @@ class LoginView(APIView):
 
 
 
-
-# class ProfileView(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-#         serializer = ProfileSerializer(request.user)
-#         return Response(serializer.data)
-
-#     def patch(self, request):
-#         serializer = ProfileSerializer(
-#             request.user,
-#             data=request.data,
-#             partial=True
-#         )
-
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(
-#                 {"message": "Profile updated successfully"}
-#             )
-
-#         first_error = list(serializer.errors.values())[0][0]
-#         return Response(
-#             {"message": first_error},
-#             status=status.HTTP_400_BAD_REQUEST
-#         )
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
 
 
+    def get(self,request):
+        serializer = ProfileSerializer(request.user)
+        return Response(serializer.data)
 
+    def patch(self,request):
+        serializer = ProfileSerializer(
+            request.user,
+            data = request.data
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    'message':"Profile Updated!"
+                }
+            )
+        first_error = list(serializer.errors.values())[0][0]
+        return Response(
+            {
+                'message':first_error,
+            },
+            status = status.HTTP_400_BAD_REQUEST
+        )
