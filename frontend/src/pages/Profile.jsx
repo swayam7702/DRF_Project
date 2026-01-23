@@ -1,16 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { notify } from './LogInPage';
+import { useNavigate } from 'react-router-dom';
 const Profile = () => {
     const [formData, setFormData] = useState({
         username: "",
         email: ""
     });
 
+
+    // formData = {username:"", email:""}
+
+    // formData.username = "Latest Name"
+    // formData = {username:"Latest Name", email:""}
+    //setFormData(...formData,[key]:value)
+
+    const token = localStorage.getItem("accessToken");
     const [loading, setloading] = useState(true);
 
+    const navigate = useNavigate();
     useEffect(() => {
         axios.get("http://127.0.0.1:8000/api/v1/profile", {
-            withCredentials: true
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         })
             .then((res) => {
                 setFormData(res.data);
@@ -22,6 +35,7 @@ const Profile = () => {
             })
             .finally(() => setloading(false));
     }, [])
+
 
     const handleChange = (e) => {
         setFormData(
@@ -36,12 +50,17 @@ const Profile = () => {
         e.preventDefault()
 
         try {
-            const response = await axios.patch("http://127.0.0.1:8000/api/v1/profile", formData, {
-                withCredentials: true
+            const response = await axios.patch("http://127.0.0.1:8000/api/v1/profile/", formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             })
-            toast.success(response.data.message);
+            notify({ message: response.data.message, type: "success" });
+            setTimeout(() => {
+                navigate("/");
+            }, 800);
         } catch (err) {
-            toast.error(err?.response?.data?.message || "Update Failed!")
+            notify(err?.response?.data?.message || "Update Failed!")
         }
     };
 
@@ -50,6 +69,7 @@ const Profile = () => {
     return (
         <div style={{ border: "1px solid", maxWidth: "400pc", padding: "20px", }}>
             <form onSubmit={handleUpdate}>
+                <h1 className='text-xl'>{formData?.username}</h1>
                 <input
                     name="username"
                     value={formData.username}

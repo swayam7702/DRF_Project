@@ -2,6 +2,29 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+const TOAST_ID = "login-toast";
+
+export const notify = ({ message, type }) => {
+    if (toast.isActive(TOAST_ID)) {
+        toast.update(TOAST_ID, {
+            render: message,
+            type,
+            isLoading: type === "info",
+            autoClose: type === "info" ? false : 3000,
+        });
+
+    } else {
+        toast(message, {
+            toastId: TOAST_ID,
+            render: message,
+            type,
+            isLoading: type === "info",
+            autoClose: type === "info" ? false : 3000,
+        }
+        )
+    }
+}
+
 const LogInPage = () => {
     const navigate = useNavigate();
     const formStyle = {
@@ -48,28 +71,6 @@ const LogInPage = () => {
     // formData.email = "New Value"
     // formData.password = "New Value"
 
-    const TOAST_ID = "login-toast";
-
-    const notify = ({ message, type }) => {
-        if (toast.isActive(TOAST_ID)) {
-            toast.update(TOAST_ID, {
-                render: message,
-                type,
-                isLoading: type === "info",
-                autoClose: type === "info" ? false : 3000,
-            });
-
-        } else {
-            toast(message, {
-                toastId: TOAST_ID,
-                render: message,
-                type,
-                isLoading: type === "info",
-                autoClose: type === "info" ? false : 3000,
-            }
-            )
-        }
-    }
 
 
     const handleChange = (e) => {
@@ -96,14 +97,18 @@ const LogInPage = () => {
             ...formData
         }
 
-        console.log(userData, "payload while submiting")
         try {
             const response = await axios.post("http://127.0.0.1:8000/api/v1/login/", userData);
             if (response?.status === 200) {
-                localStorage.setItem("authUser", JSON.stringify(response.data.user));
+                localStorage.setItem("accessToken", response.data.access);
+                localStorage.setItem("user", JSON.stringify(response.data.user));
                 notify({ message: response.data.message, type: "success" });
-                navigate("/");
+
+                setTimeout(() => {
+                    navigate("/");
+                }, 800);
             }
+
 
             setFormData({
                 username: "",
