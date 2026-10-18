@@ -124,11 +124,28 @@ const Register = () => {
 
         } catch (error) {
             console.error("Error registering:", error?.response?.data?.message);
-            const errMessage = error?.response?.data?.message
+            const errorData = error?.response?.data;
+
+            let errMessage = "Login failed.";
+
+            if (typeof errorData?.message === "string") {
+                errMessage = errorData.message;
+            } else if (Array.isArray(errorData?.message)) {
+                errMessage = errorData.message[0];
+            } else if (typeof errorData?.detail === "string") {
+                errMessage = errorData.detail;
+            } else {
+                const firstField = Object.keys(errorData || {})[0];
+
+                if (firstField && Array.isArray(errorData[firstField])) {
+                    errMessage = errorData[firstField][0];
+                }
+            }
+
             notify({
-                message: errMessage || "Registration Failed!",
-                type: "error"
-            })
+                message: errMessage,
+                type: "error",
+            });
         } finally {
             setLoading(false)
         }

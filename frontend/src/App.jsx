@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Home from "./pages/Home";
+import Dashboard from "./dashboard/Dashboard";
 import About from "./pages/About";
 import Register from "./pages/Register";
 import LogInPage from "./pages/LogInPage";
@@ -21,10 +22,9 @@ function App() {
       <Route element={<MainLayout />}>
         {/* Protected Routes */}
         <Route element={<ProtectedRoutes />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/about" element={<About />} />
-          <Route path="/profile" element={<Profile />} />
-
+          <Route  path="/profile" element={<Profile />} />
         </Route>
       </Route>
     </Routes>

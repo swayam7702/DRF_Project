@@ -2,9 +2,9 @@ import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom';
 
 const PublicRoutes = () => {
-    const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken");
 
-  return token ? <Navigate to="/" /> : <Outlet/>;
+  return token ? <Navigate to="/" replace /> : <Outlet />;
 };
 
 export default PublicRoutes
