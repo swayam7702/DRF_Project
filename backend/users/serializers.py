@@ -80,7 +80,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
@@ -174,23 +176,38 @@ class LoginSerializer(serializers.Serializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
+     class Meta:
         model = User
         fields = ["id", "username", "email"]
-        read_only_fields = ["id", "username"]
+        read_only_fields = ["id"]
 
-    def validate_email(self, value):
-        queryset = User.objects.filter(email__iexact=value)
+        def validate_email(self, value):
+            user = self.context["request"].user
 
-        if self.instance:
-            queryset = queryset.exclude(pk=self.instance.pk)
+            if (
+                User.objects.exclude(id=user.id)
+                .filter(email__iexact=value)
+                .exists()
+            ):
+                raise serializers.ValidationError(
+                    "This email is already used by another account."
+                )
 
-        if queryset.exists():
-            raise serializers.ValidationError(
-                "Email already exists."
-            )
+            return value
 
-        return value
+        def validate_username(self, value):
+            user = self.context["request"].user
+
+            if (
+                User.objects.exclude(id=user.id)
+                .filter(username__iexact=value)
+                .exists()
+            ):
+                raise serializers.ValidationError(
+                    "This username is already taken."
+                )
+
+            return value
 
 
 class LogoutSerializer(serializers.Serializer):

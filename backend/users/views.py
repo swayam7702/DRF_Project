@@ -177,6 +177,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+
 from .serializers import (
     LoginSerializer,
     LogoutSerializer,
@@ -254,15 +255,22 @@ class LogoutView(APIView):
         )
 
 
-class ProfileView(APIView):
+
+
+
+class UserProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializer = ProfileSerializer(request.user)
+        serializer = ProfileSerializer(
+            request.user,
+            context={"request": request}
+        )
 
         return Response(
             {
                 "success": True,
+                "message": "Profile fetched successfully.",
                 "data": serializer.data,
             },
             status=status.HTTP_200_OK,
@@ -273,15 +281,26 @@ class ProfileView(APIView):
             request.user,
             data=request.data,
             partial=True,
+            context={"request": request}
         )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response(
+                {
+                    "success": True,
+                    "message": "Profile updated successfully.",
+                    "data": serializer.data,
+                },
+                status=status.HTTP_200_OK,
+            )
 
         return Response(
             {
-                "success": True,
-                "message": "Profile updated successfully.",
-                "data": serializer.data,
+                "success": False,
+                "message": "Profile update failed.",
+                "errors": serializer.errors,
             },
-            status=status.HTTP_200_OK,
+            status=status.HTTP_400_BAD_REQUEST,
         )
