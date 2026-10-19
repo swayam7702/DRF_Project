@@ -6,5 +6,6 @@ export const dashboardLoader = async () => {
     monthlySpending: 32450,
     upcomingDues: [],
     recentTransactions: [],
+    isFinancialProfile:false,
   };
 };

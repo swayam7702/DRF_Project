@@ -14,7 +14,12 @@ import { dashboardLoader } from "./loaders/dashboardLoader";
 
 import { loginAction } from "./actions/loginAction";
 import { registerAction } from "./actions/registerAction";
-
+import { Navigate } from "react-router";
+import ProfileLayout from "../layouts/ProfileLayout";
+import FinancialProfile from "../pages/FinancialProfile";
+import GetAllCards from "../pages/cards/GetAllCards";
+import AddCard from "../pages/cards/AddCard";
+import CardDetail from "../pages/cards/CardDetail";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -32,7 +37,33 @@ export const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <Profile />,
+        element: <ProfileLayout />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to="/profile/basic" replace />,
+          },
+          {
+            path: "basic",
+            element: <Profile />,
+          },
+          {
+            path: "financial",
+            element: <FinancialProfile />,
+          },
+        ],
+      },
+      {
+        path: "cards",
+        element: <GetAllCards />,
+      },
+      {
+        path: "cards/new",
+        element: <AddCard />,
+      },
+      {
+        path: "cards/:id",
+        element: <CardDetail />,
       },
     ],
   },
