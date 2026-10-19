@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   CreditCard,
@@ -11,18 +12,15 @@ import {
   Receipt,
   Target,
 } from "lucide-react";
-
+import FinancialProfileModal from "../components/FinancialProfileModal";
 const Dashboard = () => {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const userName = user?.username || "User";
-
-  // Replace these with your real API data later
   const dashboardData = {
     safeToSpend: 18400,
     totalDues: 12500,
     activeCards: 4,
     monthlySpending: 32450,
     monthlyLimit: 50000,
+    isFinancialProfile: false,
     upcomingDues: [
       {
         id: 1,
@@ -74,6 +72,11 @@ const Dashboard = () => {
       },
     ],
   };
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const userName = user?.username || "User";
+  const [showFinancialProfileModal, setShowFinancialProfileModal] =
+    useState(dashboardData.isFinancialProfile === false);
+  // Replace these with your real API data later
 
   const spendingPercentage = Math.round(
     (dashboardData.monthlySpending / dashboardData.monthlyLimit) * 100
@@ -227,11 +230,10 @@ const Dashboard = () => {
                         ₹{due.amount.toLocaleString("en-IN")}
                       </p>
                       <p
-                        className={`text-xs font-medium ${
-                          due.status === "due-soon"
+                        className={`text-xs font-medium ${due.status === "due-soon"
                             ? "text-amber-600"
                             : "text-slate-500"
-                        }`}
+                          }`}
                       >
                         Due on {due.dueDate}
                       </p>
@@ -345,6 +347,10 @@ const Dashboard = () => {
           </section>
         </main>
       </div>
+      <FinancialProfileModal
+        open={showFinancialProfileModal}
+        onClose={() => setShowFinancialProfileModal(false)}
+      />
     </div>
   );
 };
